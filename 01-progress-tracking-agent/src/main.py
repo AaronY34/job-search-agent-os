@@ -246,34 +246,12 @@ def section_values(session_note: SessionNote | None, section: str) -> list[str]:
     return session_note.sections.get(section, [])
 
 
-def fallback_planned(commits: list[Commit], files: list[str]) -> list[str]:
-    if commits or files:
-        return ["Continue building the progress tracking workflow using repository evidence."]
-    return ["No plan was recorded in a session note."]
-
-
-def fallback_tried(commits: list[Commit], files: list[str]) -> list[str]:
-    if commits:
-        return [f"Worked through committed changes: {commit.subject}" for commit in commits[:3]]
-    if files:
-        return ["Made local changes that have not been summarized in a session note yet."]
-    return ["No attempts were detected."]
-
-
 def fallback_made(commits: list[Commit], changed_areas: list[str]) -> list[str]:
     if commits:
         return [commit.subject for commit in commits[:5]]
     if changed_areas:
         return [f"Updated {area}" for area in changed_areas]
     return []
-
-
-def fallback_learned(session_note: SessionNote | None, commits: list[Commit], files: list[str]) -> list[str]:
-    if session_note:
-        return []
-    if commits or files:
-        return ["No reflection was recorded; add a session note to capture what changed in the thinking."]
-    return ["No learning evidence was recorded."]
 
 
 def fallback_next(session_note: SessionNote | None, status: str) -> str:
@@ -295,66 +273,74 @@ def determine_status(session_note: SessionNote | None, commits: list[Commit], fi
     return STATUS_NO_ACTIVITY
 
 
-def diary_summary(
+def first_values(*groups: list[str], limit: int) -> list[str]:
+    values: list[str] = []
+    seen: set[str] = set()
+    for group in groups:
+        for value in group:
+            normalized = value.strip()
+            key = normalized.lower()
+            if normalized and key not in seen:
+                values.append(normalized)
+                seen.add(key)
+            if len(values) == limit:
+                return values
+    return values
+
+
+def build_summary(
     session_note: SessionNote | None,
     planned: list[str],
-    tried: list[str],
     made: list[str],
     learned: list[str],
-    friction: list[str],
-    next_step: str,
     commits: list[Commit],
     changed_areas: list[str],
 ) -> str:
-    paragraphs = []
     if session_note:
-        paragraphs.append(
-            "The session note was the main source for today's progress log. "
-            f"The plan was: {sentence_join(planned)}"
-        )
-        if tried:
-            paragraphs.append(f"What I tried: {sentence_join(tried)}")
+        sentences = []
         if made:
-            paragraphs.append(f"What I made: {sentence_join(made)}")
+            made_items = [lower_first(value) for value in made[:2]]
+            if len(made_items) == 1:
+                sentences.append(f"Today I worked on {made_items[0]}.")
+            else:
+                sentences.append(f"Today I worked on {made_items[0]}, and I also worked on {made_items[1]}.")
+        if planned:
+            sentences.append(f"The main focus was to {lower_first(planned[0])}.")
         if learned:
-            paragraphs.append(f"What I learned: {sentence_join(learned)}")
-        if friction:
-            paragraphs.append(f"Friction came from: {sentence_join(friction)}")
-    elif commits or changed_areas:
-        evidence = []
-        if commits:
-            evidence.append(f"{len(commits)} commit(s)")
-        if changed_areas:
-            evidence.append(f"changes in {sentence_join(changed_areas)}")
-        paragraphs.append(
-            "No session note was available, so this diary falls back to Git evidence. "
-            f"The available evidence shows {', '.join(evidence)}."
-        )
-        if made:
-            paragraphs.append(f"The concrete outputs detected were {sentence_join(made)}")
-    else:
-        paragraphs.append("No session note, commits, or modified files were detected for this date.")
+            sentences.append(f"A useful takeaway was that {lower_first(learned[0])}.")
+        if sentences:
+            return " ".join(sentences)
 
-    paragraphs.append(f"The next step is: {next_step}")
-    return "\n\n".join(ensure_period(paragraph) for paragraph in paragraphs[:4])
+    if commits:
+        return ensure_period(f"Today I made progress through {sentence_join([commit.subject for commit in commits[:2]])}")
+    if changed_areas:
+        return ensure_period(f"Today I worked on {sentence_join(changed_areas[:3])}")
+    return "No progress activity was detected for this date."
 
 
-def sentence_join(values: list[str]) -> str:
-    clean_values = [value.rstrip(".") for value in values if value.strip()]
-    if not clean_values:
-        return "no recorded items"
-    if len(clean_values) == 1:
-        return clean_values[0]
-    return "; ".join(clean_values)
+def should_include_technical_evidence(
+    session_note: SessionNote | None,
+    commits: list[Commit],
+    changed_areas: list[str],
+) -> bool:
+    return bool(session_note or commits or changed_areas)
 
 
-def ensure_period(value: str) -> str:
-    value = value.strip()
-    if not value:
-        return value
-    if value[-1] in ".!?":
-        return value
-    return f"{value}."
+def technical_evidence(
+    session_note: SessionNote | None,
+    commits: list[Commit],
+    changed_areas: list[str],
+) -> str:
+    lines = ["## Technical Evidence"]
+    if session_note:
+        lines.extend(["", f"- Session note: `{session_note.path}`"])
+    if commits:
+        commit_text = "; ".join(f"`{commit.sha}` — {commit.subject}" for commit in commits[:3])
+        extra = f" and {len(commits) - 3} more" if len(commits) > 3 else ""
+        lines.append(f"- Commits: {commit_text}{extra}")
+    if changed_areas:
+        lines.append(f"- Changed areas: {sentence_join(changed_areas[:5])}")
+    return "\n".join(lines)
 
 
 def render_log(
@@ -368,60 +354,67 @@ def render_log(
     changed_areas = summarize_changed_areas(files)
     status = determine_status(session_note, commits, files)
 
-    planned = section_values(session_note, "Planned") or fallback_planned(commits, files)
-    tried = section_values(session_note, "Tried") or fallback_tried(commits, files)
-    made = section_values(session_note, "Made") or fallback_made(commits, changed_areas)
-    learned = section_values(session_note, "Learned") or fallback_learned(session_note, commits, files)
-    friction = section_values(session_note, "Friction") or ["None detected."]
+    planned = section_values(session_note, "Planned")
+    made = first_values(
+        section_values(session_note, "Made"),
+        section_values(session_note, "Evidence"),
+        fallback_made(commits, changed_areas),
+        limit=5,
+    )
+    learned = section_values(session_note, "Learned")
     next_step = fallback_next(session_note, status)
-    summary = diary_summary(
+    summary = build_summary(
         session_note=session_note,
         planned=planned,
-        tried=tried,
         made=made,
         learned=learned,
-        friction=[] if friction == ["None detected."] else friction,
-        next_step=next_step,
         commits=commits,
         changed_areas=changed_areas,
     )
 
-    session_note_paths = [session_note.path] if session_note else []
+    sections = [
+        f"# Daily Log — {log_date.isoformat()}",
+        "",
+        summary,
+        "",
+        "## Achieved",
+        bullet_list(made, empty_text="No concrete outcomes detected."),
+        "",
+        "## Next",
+        f"- {next_step}",
+    ]
 
-    content = f"""# Daily Progress Log — {log_date.isoformat()}
+    if should_include_technical_evidence(session_note, commits, changed_areas):
+        sections.extend(["", technical_evidence(session_note, commits, changed_areas)])
 
-## Diary Summary
-{summary}
+    return "\n".join(sections) + "\n", status
 
-## What I Planned
-{bullet_list(planned)}
 
-## What I Tried
-{bullet_list(tried)}
+def sentence_join(values: list[str]) -> str:
+    clean_values = [value.rstrip(".") for value in values if value.strip()]
+    if not clean_values:
+        return "no recorded items"
+    if len(clean_values) == 1:
+        return clean_values[0]
+    if len(clean_values) == 2:
+        return f"{clean_values[0]} and {clean_values[1]}"
+    return ", ".join(clean_values[:-1]) + f", and {clean_values[-1]}"
 
-## What I Made
-{bullet_list(made, empty_text="No concrete outputs detected.")}
 
-## What I Learned
-{bullet_list(learned)}
+def lower_first(value: str) -> str:
+    value = value.strip().rstrip(".")
+    if not value:
+        return value
+    return value[0].lower() + value[1:]
 
-## Friction / Blockers
-{bullet_list(friction)}
 
-## Next Step
-- {next_step}
-
-## Technical Evidence
-### Session Notes Used
-{bullet_list(session_note_paths, empty_text="None")}
-
-### Git Commits
-{commit_list(commits)}
-
-### Changed Areas
-{bullet_list(changed_areas, empty_text="None")}
-"""
-    return content, status
+def ensure_period(value: str) -> str:
+    value = value.strip()
+    if not value:
+        return value
+    if value[-1] in ".!?":
+        return value
+    return f"{value}."
 
 
 def write_log(project_root: Path, log_date: date, content: str, force: bool) -> Path:
