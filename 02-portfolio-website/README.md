@@ -19,17 +19,41 @@ This subproject is separate from `01-progress-tracking-agent`. It contains the w
 - Tailwind CSS
 - Vercel-ready project structure
 
-## Current Scope
+## Pages
 
-This is the simplest working website structure. It includes:
+- Home: summary, positioning, focus areas, and featured work.
+- About: working style and skill focus.
+- Projects: project showcase using `src/data/projects.ts`.
+- Case Studies: deeper write-up candidates for selected projects.
+- Resume: web resume shell ready for real experience and resume assets.
+- Contact: public contact shell ready for final links.
 
-- A Next.js app shell.
-- A single home page.
-- Basic metadata.
-- Tailwind styling.
-- Structured portfolio content in `src/data/profile.ts`.
+## Components
 
-It does not include deployment setup, analytics, CMS, external APIs, or large media assets yet.
+- `Navbar`
+- `Footer`
+- `ProjectCard`
+- `CaseStudyCard`
+- `SkillTag`
+- `SectionHeader`
+
+## Project Data
+
+Project content lives in:
+
+```text
+src/data/projects.ts
+```
+
+Unfinished projects must stay labeled as `In Progress`, `Research`, or `Planned`. Do not add fake companies, fake metrics, or fake results.
+
+Initial projects:
+
+1. Job Search Agent OS
+2. Progress Tracking Agent
+3. Inventory Forecasting Dashboard
+4. ERP/CRM Implementation Case Study
+5. Drone Data Pipeline Research Project
 
 ## Folder Structure
 
@@ -44,11 +68,18 @@ It does not include deployment setup, analytics, CMS, external APIs, or large me
   public/
   src/
     app/
+      about/
+      case-studies/
+      contact/
+      projects/
+      resume/
       globals.css
       layout.tsx
       page.tsx
+    components/
     data/
       profile.ts
+      projects.ts
 ```
 
 ## Run Locally
@@ -72,7 +103,7 @@ http://localhost:3000
 npm run build
 ```
 
-## Vercel Notes
+## Vercel Deployment
 
 When ready to deploy:
 
@@ -80,10 +111,11 @@ When ready to deploy:
 2. Create a Vercel project.
 3. Set the project root to `02-portfolio-website`.
 4. Use the default Next.js build settings.
+5. Deploy from the `main` branch.
 
 ## Next Content Tasks
 
-- Write a sharper profile summary.
-- Add real project entries and case study notes.
-- Decide whether the resume should be a page, PDF link, or both.
-- Add screenshots or project images from Google Drive only after choosing final assets.
+- Replace placeholder contact text with the preferred public email and links.
+- Add real resume details and decide whether to include a PDF.
+- Expand each project with evidence, screenshots, and case study notes.
+- Keep unfinished work labeled honestly as `In Progress`, `Research`, or `Planned`.
