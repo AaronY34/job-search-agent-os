@@ -1,6 +1,6 @@
 # GitHub Actions Automation
 
-The daily progress tracker can run in GitHub Actions so the markdown log is generated from the cloud repository, regardless of whether the work happened on Mac or PC.
+The daily progress tracker can run in GitHub Actions so the markdown diary log is generated from the cloud repository, regardless of whether the work happened on Mac or PC.
 
 ## Schedule
 
@@ -27,11 +27,12 @@ Manual runs do not use the scheduled-hour guard. They generate the log for the c
 
 The GitHub Actions runner only sees what has been pushed to GitHub. That means it can summarize:
 
+- Session notes committed under `docs/progress/session-notes/`.
 - Commits already pushed to the repository.
 - Files changed inside those pushed commits.
 - Repository files that exist in GitHub at workflow runtime.
 
-It cannot see uncommitted work on your Mac or PC. It also cannot see local commits that have not been pushed yet.
+It cannot see uncommitted work on your Mac or PC. It also cannot see local commits that have not been pushed yet. If a session note is not committed and pushed, the cloud daily log cannot use it.
 
 ## Switching Between Mac And PC
 
@@ -41,7 +42,7 @@ When switching devices:
 2. Push the branch to GitHub.
 3. Pull the latest changes on the other device.
 
-If work stays uncommitted or unpushed on one machine, the GitHub Actions daily log cannot include it. For local-only notes, add them to `shared/project-notes/daily-note.md`, commit them, and push before the scheduled run.
+If work stays uncommitted or unpushed on one machine, the GitHub Actions daily log cannot include it. Before switching devices, let Codex update `docs/progress/session-notes/YYYY-MM-DD.md`, then commit and push the session note with the code/doc changes.
 
 ## Disabling The Workflow
 

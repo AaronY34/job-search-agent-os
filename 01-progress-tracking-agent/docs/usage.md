@@ -1,6 +1,20 @@
 # Progress Tracking Agent Usage
 
-Run the generator from the repository root:
+The final daily log is generated automatically by GitHub Actions. Codex should maintain lightweight session notes after meaningful work sessions so the daily log reads like a project diary instead of a file list.
+
+Session notes live here:
+
+```text
+docs/progress/session-notes/YYYY-MM-DD.md
+```
+
+Use this template:
+
+```text
+docs/progress/session-notes/session-note-template.md
+```
+
+Run the generator manually from the repository root:
 
 ```bash
 python3 01-progress-tracking-agent/src/main.py
@@ -44,15 +58,17 @@ Flags can be combined:
 python3 01-progress-tracking-agent/src/main.py --date 2026-05-10 --force --project-root /path/to/job-search-agent-os
 ```
 
-## Optional Daily Note
+## Session Notes
 
-If this file exists, the generator includes it in the daily log:
+The tracker uses evidence in this priority order:
 
-```text
-shared/project-notes/daily-note.md
-```
+1. `docs/progress/session-notes/YYYY-MM-DD.md`
+2. Git commit messages for the selected date
+3. Files modified on the selected date
 
-Use it for short human-written notes that Git cannot know, such as blockers or context. The script includes the note as written and does not summarize it with AI.
+Codex should update the session note automatically before finishing a meaningful project session. The note should stay concise and should not contain secrets or long raw file lists.
+
+If no session note exists, the tracker falls back to commit messages and changed file areas. That fallback is useful, but less human, because Git cannot know what was planned, tried, or learned.
 
 ## Status Rules
 
@@ -62,9 +78,9 @@ Use it for short human-written notes that Git cannot know, such as blockers or c
 
 ## Commit The Generated Log
 
-After running the script, review the generated markdown file. Then commit the log and index:
+GitHub Actions can commit the generated log automatically. If you run the tracker manually, review the generated markdown file, then commit the log, index, and any session note changes:
 
 ```bash
-git add docs/progress/daily/YYYY-MM-DD.md docs/progress/progress-index.md
+git add docs/progress/daily/YYYY-MM-DD.md docs/progress/progress-index.md docs/progress/session-notes/YYYY-MM-DD.md
 git commit -m "Add daily progress log for YYYY-MM-DD"
 ```

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate deterministic daily progress logs from Git evidence."""
+"""Generate deterministic daily diary logs from repo evidence."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from pathlib import Path
 STATUS_NO_ACTIVITY = "No Activity"
 STATUS_PARTIAL = "Partial"
 STATUS_DONE = "Done"
+SESSION_SECTIONS = ("Planned", "Tried", "Made", "Learned", "Friction", "Next", "Evidence")
 
 
 @dataclass(frozen=True)
@@ -21,9 +22,15 @@ class Commit:
     subject: str
 
 
+@dataclass(frozen=True)
+class SessionNote:
+    path: str
+    sections: dict[str, list[str]]
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate a markdown daily progress log from Git commits and modified files."
+        description="Generate a markdown daily diary log from session notes and Git evidence."
     )
     parser.add_argument(
         "--date",
@@ -149,26 +156,51 @@ def get_modified_files(project_root: Path, log_date: date) -> list[str]:
     return sorted(set(files))
 
 
-def read_daily_note(project_root: Path) -> str:
-    note_path = project_root / "shared" / "project-notes" / "daily-note.md"
+def clean_bullet(line: str) -> str:
+    return line.strip().lstrip("-* ").strip()
+
+
+def parse_session_sections(content: str) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {section: [] for section in SESSION_SECTIONS}
+    current_section = ""
+
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if line.startswith("## "):
+            heading = line[3:].strip()
+            current_section = heading if heading in sections else ""
+            continue
+        if not current_section:
+            continue
+        value = clean_bullet(line)
+        if value:
+            sections[current_section].append(value)
+
+    return sections
+
+
+def read_session_note(project_root: Path, log_date: date) -> SessionNote | None:
+    relative_path = Path("docs") / "progress" / "session-notes" / f"{log_date.isoformat()}.md"
+    note_path = project_root / relative_path
     if not note_path.exists():
-        return ""
-    return note_path.read_text(encoding="utf-8").strip()
+        return None
 
+    content = note_path.read_text(encoding="utf-8").strip()
+    if not content:
+        return None
 
-def determine_status(commits: list[Commit], files_modified: list[str], daily_note: str) -> str:
-    if commits:
-        return STATUS_DONE
-    if files_modified or daily_note:
-        return STATUS_PARTIAL
-    return STATUS_NO_ACTIVITY
+    sections = parse_session_sections(content)
+    if not any(sections.values()):
+        return None
+
+    return SessionNote(path=relative_path.as_posix(), sections=sections)
 
 
 def unique_sorted(values: list[str]) -> list[str]:
     return sorted(set(value for value in values if value.strip()))
 
 
-def bullet_list(values: list[str], empty_text: str = "None") -> str:
+def bullet_list(values: list[str], empty_text: str = "None detected.") -> str:
     if not values:
         return f"- {empty_text}"
     return "\n".join(f"- {value}" for value in values)
@@ -180,130 +212,216 @@ def commit_list(commits: list[Commit]) -> str:
     return "\n".join(f"- `{commit.sha}` — {commit.subject}" for commit in commits)
 
 
-def build_summary(status: str, commits: list[Commit], files_modified: list[str], daily_note: str) -> str:
-    evidence_parts = []
-    if commits:
-        evidence_parts.append(f"{len(commits)} commit(s)")
-    if files_modified:
-        evidence_parts.append(f"{len(files_modified)} modified file(s)")
-    if daily_note:
-        evidence_parts.append("1 manual note")
-
-    if not evidence_parts:
-        return "No Git commits, modified files, or manual note were detected for this date."
-
-    evidence_text = ", ".join(evidence_parts)
-    if status == STATUS_DONE:
-        return f"Completed work is indicated by {evidence_text}."
-    return f"Activity is indicated by {evidence_text}, but no commit evidence confirms completed work."
+def changed_area(path_text: str) -> str:
+    parts = path_text.split("/")
+    if len(parts) == 1:
+        return "repository root"
+    if parts[0] == "docs" and len(parts) >= 3:
+        return "/".join(parts[:3])
+    if parts[0].startswith(("01-", "02-", "03-")) and len(parts) >= 2:
+        return "/".join(parts[:2])
+    return parts[0]
 
 
-def detect_outputs(commits: list[Commit], files_modified: list[str]) -> list[str]:
-    outputs = []
-    for commit in commits:
-        outputs.append(f"Commit `{commit.sha}`: {commit.subject}")
-    outputs.extend(files_modified)
-    return outputs
-
-
-def detect_blockers(daily_note: str) -> list[str]:
-    if not daily_note:
+def summarize_changed_areas(files: list[str]) -> list[str]:
+    if not files:
         return []
+    if len(files) <= 4:
+        return files
 
-    blockers = []
-    for line in daily_note.splitlines():
-        normalized = line.strip().lstrip("-* ").strip()
-        lowered = normalized.lower()
-        if normalized and ("blocker" in lowered or "blocked" in lowered):
-            blockers.append(normalized)
-    return blockers
+    area_counts: dict[str, int] = {}
+    for file_path in files:
+        area = changed_area(file_path)
+        area_counts[area] = area_counts.get(area, 0) + 1
 
-
-def suggest_next_step(status: str, daily_note: str) -> str:
-    if daily_note:
-        for line in daily_note.splitlines():
-            normalized = line.strip().lstrip("-* ").strip()
-            lowered = normalized.lower()
-            if lowered.startswith("next step:") or lowered.startswith("next:"):
-                return normalized.split(":", 1)[1].strip()
-
-    if status == STATUS_DONE:
-        return "Review the generated log and commit it if accurate."
-    if status == STATUS_PARTIAL:
-        return "Review modified files and commit completed work when ready."
-    return "Review the project roadmap and choose the next task."
-
-
-def raw_evidence_block(
-    commits: list[Commit],
-    files_modified: list[str],
-    daily_note: str,
-) -> str:
-    commit_lines = [f"{commit.sha} {commit.subject}" for commit in commits]
-    raw_lines = [
-        "commits:",
-        *(commit_lines if commit_lines else ["None"]),
-        "files_modified:",
-        *(files_modified if files_modified else ["None"]),
-        "manual_note:",
-        daily_note if daily_note else "None",
+    return [
+        f"{area} ({count} file{'s' if count != 1 else ''})"
+        for area, count in sorted(area_counts.items())
     ]
-    return "\n".join(raw_lines)
+
+
+def section_values(session_note: SessionNote | None, section: str) -> list[str]:
+    if not session_note:
+        return []
+    return session_note.sections.get(section, [])
+
+
+def fallback_planned(commits: list[Commit], files: list[str]) -> list[str]:
+    if commits or files:
+        return ["Continue building the progress tracking workflow using repository evidence."]
+    return ["No plan was recorded in a session note."]
+
+
+def fallback_tried(commits: list[Commit], files: list[str]) -> list[str]:
+    if commits:
+        return [f"Worked through committed changes: {commit.subject}" for commit in commits[:3]]
+    if files:
+        return ["Made local changes that have not been summarized in a session note yet."]
+    return ["No attempts were detected."]
+
+
+def fallback_made(commits: list[Commit], changed_areas: list[str]) -> list[str]:
+    if commits:
+        return [commit.subject for commit in commits[:5]]
+    if changed_areas:
+        return [f"Updated {area}" for area in changed_areas]
+    return []
+
+
+def fallback_learned(session_note: SessionNote | None, commits: list[Commit], files: list[str]) -> list[str]:
+    if session_note:
+        return []
+    if commits or files:
+        return ["No reflection was recorded; add a session note to capture what changed in the thinking."]
+    return ["No learning evidence was recorded."]
+
+
+def fallback_next(session_note: SessionNote | None, status: str) -> str:
+    note_next = section_values(session_note, "Next")
+    if note_next:
+        return note_next[0]
+    if status == STATUS_DONE:
+        return "Review the generated daily log and commit it if it reads accurately."
+    if status == STATUS_PARTIAL:
+        return "Finish or commit the in-progress work, then rerun the tracker."
+    return "Choose the next project task and record a session note after meaningful progress."
+
+
+def determine_status(session_note: SessionNote | None, commits: list[Commit], files: list[str]) -> str:
+    if commits or section_values(session_note, "Made"):
+        return STATUS_DONE
+    if session_note or files:
+        return STATUS_PARTIAL
+    return STATUS_NO_ACTIVITY
+
+
+def diary_summary(
+    session_note: SessionNote | None,
+    planned: list[str],
+    tried: list[str],
+    made: list[str],
+    learned: list[str],
+    friction: list[str],
+    next_step: str,
+    commits: list[Commit],
+    changed_areas: list[str],
+) -> str:
+    paragraphs = []
+    if session_note:
+        paragraphs.append(
+            "The session note was the main source for today's progress log. "
+            f"The plan was: {sentence_join(planned)}"
+        )
+        if tried:
+            paragraphs.append(f"What I tried: {sentence_join(tried)}")
+        if made:
+            paragraphs.append(f"What I made: {sentence_join(made)}")
+        if learned:
+            paragraphs.append(f"What I learned: {sentence_join(learned)}")
+        if friction:
+            paragraphs.append(f"Friction came from: {sentence_join(friction)}")
+    elif commits or changed_areas:
+        evidence = []
+        if commits:
+            evidence.append(f"{len(commits)} commit(s)")
+        if changed_areas:
+            evidence.append(f"changes in {sentence_join(changed_areas)}")
+        paragraphs.append(
+            "No session note was available, so this diary falls back to Git evidence. "
+            f"The available evidence shows {', '.join(evidence)}."
+        )
+        if made:
+            paragraphs.append(f"The concrete outputs detected were {sentence_join(made)}")
+    else:
+        paragraphs.append("No session note, commits, or modified files were detected for this date.")
+
+    paragraphs.append(f"The next step is: {next_step}")
+    return "\n\n".join(ensure_period(paragraph) for paragraph in paragraphs[:4])
+
+
+def sentence_join(values: list[str]) -> str:
+    clean_values = [value.rstrip(".") for value in values if value.strip()]
+    if not clean_values:
+        return "no recorded items"
+    if len(clean_values) == 1:
+        return clean_values[0]
+    return "; ".join(clean_values)
+
+
+def ensure_period(value: str) -> str:
+    value = value.strip()
+    if not value:
+        return value
+    if value[-1] in ".!?":
+        return value
+    return f"{value}."
 
 
 def render_log(
     log_date: date,
-    status: str,
+    session_note: SessionNote | None,
     commits: list[Commit],
     commit_files: list[str],
     modified_files: list[str],
-    daily_note: str,
-) -> str:
-    files_modified = unique_sorted(commit_files + modified_files)
-    manual_note_section = ""
-    if daily_note:
-        manual_note_section = f"""
-### Manual Note
-{daily_note}
-"""
+) -> tuple[str, str]:
+    files = unique_sorted(commit_files + modified_files)
+    changed_areas = summarize_changed_areas(files)
+    status = determine_status(session_note, commits, files)
 
-    outputs = detect_outputs(commits, files_modified)
-    blockers = detect_blockers(daily_note)
-    next_step = suggest_next_step(status, daily_note)
-    summary = build_summary(status, commits, files_modified, daily_note)
-    raw_evidence = raw_evidence_block(commits, files_modified, daily_note)
+    planned = section_values(session_note, "Planned") or fallback_planned(commits, files)
+    tried = section_values(session_note, "Tried") or fallback_tried(commits, files)
+    made = section_values(session_note, "Made") or fallback_made(commits, changed_areas)
+    learned = section_values(session_note, "Learned") or fallback_learned(session_note, commits, files)
+    friction = section_values(session_note, "Friction") or ["None detected."]
+    next_step = fallback_next(session_note, status)
+    summary = diary_summary(
+        session_note=session_note,
+        planned=planned,
+        tried=tried,
+        made=made,
+        learned=learned,
+        friction=[] if friction == ["None detected."] else friction,
+        next_step=next_step,
+        commits=commits,
+        changed_areas=changed_areas,
+    )
 
-    return f"""# Daily Progress Log — {log_date.isoformat()}
+    session_note_paths = [session_note.path] if session_note else []
 
-## Status
-{status}
+    content = f"""# Daily Progress Log — {log_date.isoformat()}
 
-## Summary
+## Diary Summary
 {summary}
 
-## Evidence
+## What I Planned
+{bullet_list(planned)}
 
-### Git Commits
-{commit_list(commits)}
+## What I Tried
+{bullet_list(tried)}
 
-### Files Modified
-{bullet_list(files_modified)}
-{manual_note_section}
-## Output
-{bullet_list(outputs, empty_text="No concrete outputs detected.")}
+## What I Made
+{bullet_list(made, empty_text="No concrete outputs detected.")}
 
-## Blockers
-{bullet_list(blockers, empty_text="None detected.")}
+## What I Learned
+{bullet_list(learned)}
+
+## Friction / Blockers
+{bullet_list(friction)}
 
 ## Next Step
 - {next_step}
 
-## Raw Evidence
+## Technical Evidence
+### Session Notes Used
+{bullet_list(session_note_paths, empty_text="None")}
 
-```text
-{raw_evidence}
-```
+### Git Commits
+{commit_list(commits)}
+
+### Changed Areas
+{bullet_list(changed_areas, empty_text="None")}
 """
+    return content, status
 
 
 def write_log(project_root: Path, log_date: date, content: str, force: bool) -> Path:
@@ -345,20 +463,17 @@ def main() -> int:
     log_date = parse_log_date(args.date)
     project_root = resolve_project_root(args.project_root)
 
+    session_note = read_session_note(project_root, log_date)
     commits = get_commits(project_root, log_date)
     commit_files = get_commit_files(project_root, log_date)
     modified_files = get_modified_files(project_root, log_date)
-    daily_note = read_daily_note(project_root)
-    files_modified = unique_sorted(commit_files + modified_files)
-    status = determine_status(commits, files_modified, daily_note)
 
-    content = render_log(
+    content, status = render_log(
         log_date=log_date,
-        status=status,
+        session_note=session_note,
         commits=commits,
         commit_files=commit_files,
         modified_files=modified_files,
-        daily_note=daily_note,
     )
     output_path = write_log(project_root, log_date, content, args.force)
     index_path = update_index(project_root, log_date, status)

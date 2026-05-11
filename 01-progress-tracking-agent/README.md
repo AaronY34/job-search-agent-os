@@ -2,13 +2,19 @@
 
 ## Goal
 
-Generate local daily progress logs as markdown files inside this GitHub repository.
+Generate local daily progress logs as human-readable diary entries inside this GitHub repository.
 
-This is the first automation coding practice project inside Job Search Agent OS. V1 intentionally avoids Google Sheets, OpenAI, and extra dependencies. It uses deterministic Git evidence so progress logs stay reviewable and easy to commit.
+This is the first automation coding practice project inside Job Search Agent OS. V1 intentionally avoids Google Sheets, Google Drive writes, OpenAI, and extra dependencies. It uses lightweight session notes plus deterministic Git evidence so progress logs stay reviewable and easy to commit.
 
 ## Current Workflow
 
-From the repository root:
+Codex work sessions should update a short session note before finishing meaningful work:
+
+```text
+docs/progress/session-notes/YYYY-MM-DD.md
+```
+
+GitHub Actions can then generate the final daily diary log automatically. To run the generator manually from the repository root:
 
 ```bash
 python3 01-progress-tracking-agent/src/main.py
@@ -29,9 +35,9 @@ docs/progress/progress-index.md
 ## What The Script Does
 
 1. Reads Git commits for the selected date.
-2. Detects working tree files modified on the selected date.
-3. Optionally reads `shared/project-notes/daily-note.md` if it exists.
-4. Generates a markdown daily log.
+2. Reads `docs/progress/session-notes/YYYY-MM-DD.md` if it exists.
+3. Detects working tree files modified on the selected date.
+4. Generates a diary-style markdown daily log.
 5. Saves the log under `docs/progress/daily/`.
 6. Updates `docs/progress/progress-index.md`.
 7. Refuses to overwrite an existing daily log unless `--force` is passed.
@@ -42,7 +48,7 @@ docs/progress/progress-index.md
 - `Partial`: no commits exist, but working tree files were modified on the selected date.
 - `No Activity`: no commits or modified working tree files were detected.
 
-The script does not invent progress. It uses commit messages, committed file paths, modified file paths, and the optional daily note as its only evidence.
+The script does not invent progress. It uses session notes first, then commit messages, then changed file areas as fallback evidence. If no session note exists, the log is less reflective because Git cannot know what was planned, tried, or learned.
 
 ## Optional Flags
 
@@ -57,14 +63,15 @@ See `01-progress-tracking-agent/docs/usage.md` for details.
 ## Current Files
 
 - `src/main.py` generates markdown daily logs from Git evidence.
-- `docs/usage.md` explains manual usage and commit steps.
+- `docs/usage.md` explains manual usage, session notes, and commit steps.
 - `docs/github-actions-automation.md` explains the cloud automation workflow.
 - `requirements.txt` records that V1 has no third-party Python dependencies.
 - `../../docs/progress/daily/.gitkeep` keeps the daily log folder in Git.
+- `../../docs/progress/session-notes/session-note-template.md` gives Codex a standard session note shape.
 - `../../docs/progress/progress-index.md` links to generated daily logs.
 
 ## Later V2 Ideas
 
-- Add AI-assisted summary generation after the deterministic workflow is reliable.
+- Add AI-assisted summary generation after the session-note workflow is reliable.
 - Add Google Sheet export after local markdown logs are stable.
 - Add tests if the script grows beyond simple deterministic file generation.

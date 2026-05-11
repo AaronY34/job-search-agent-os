@@ -18,6 +18,11 @@ This repository is the local development home for a long-term, human-in-the-loop
 - Prefer small, readable steps over large framework setup.
 - Do not create frameworks, apps, or dependencies until the user asks for implementation.
 - Document decisions as they are made.
+- After making meaningful project changes, update today's session note before finishing.
+- Session notes live at `docs/progress/session-notes/YYYY-MM-DD.md`.
+- Keep session notes concise, human-readable, and based only on the current task, changed files, commands run, and decisions made in the session.
+- Session notes should include these sections: `Planned`, `Tried`, `Made`, `Learned`, `Friction`, `Next`, and `Evidence`.
+- Do not invent progress, write private secrets, or include excessive technical file lists in session notes.
 
 ## Subprojects
 1. `01-progress-tracking-agent` - Daily progress log generation into repository markdown files.
