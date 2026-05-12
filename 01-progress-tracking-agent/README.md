@@ -2,9 +2,9 @@
 
 ## Goal
 
-Generate local daily progress logs as human-readable diary entries inside this GitHub repository.
+Generate concise daily progress logs inside this GitHub repository.
 
-This is the first automation coding practice project inside Job Search Agent OS. V1 intentionally avoids Google Sheets, Google Drive writes, OpenAI, and extra dependencies. It uses lightweight session notes plus deterministic Git evidence so progress logs stay reviewable and easy to commit.
+This is the first automation coding practice project inside Job Search Agent OS. V1 intentionally avoids Google Sheets, Google Drive writes, OpenAI, and extra dependencies. It uses lightweight session notes plus deterministic Git evidence so progress logs stay human-readable, reviewable, and easy to commit.
 
 ## Current Workflow
 
@@ -14,7 +14,7 @@ Codex work sessions should update a short session note before finishing meaningf
 docs/progress/session-notes/YYYY-MM-DD.md
 ```
 
-GitHub Actions can then generate the final daily diary log automatically. To run the generator manually from the repository root:
+GitHub Actions can then generate the final daily log automatically. To run the generator manually from the repository root:
 
 ```bash
 python3 01-progress-tracking-agent/src/main.py
@@ -37,7 +37,7 @@ docs/progress/progress-index.md
 1. Reads Git commits for the selected date.
 2. Reads `docs/progress/session-notes/YYYY-MM-DD.md` if it exists.
 3. Detects working tree files modified on the selected date.
-4. Generates a diary-style markdown daily log.
+4. Generates a short markdown daily log.
 5. Saves the log under `docs/progress/daily/`.
 6. Updates `docs/progress/progress-index.md`.
 7. Refuses to overwrite an existing daily log unless `--force` is passed.
@@ -48,7 +48,26 @@ docs/progress/progress-index.md
 - `Partial`: no commits exist, but working tree files were modified on the selected date.
 - `No Activity`: no commits or modified working tree files were detected.
 
-The script does not invent progress. It uses session notes first, then commit messages, then changed file areas as fallback evidence. If no session note exists, the log is less reflective because Git cannot know what was planned, tried, or learned.
+The script does not invent progress. It uses session notes first, then commit messages, then changed file areas as fallback evidence. If no session note exists, the log is less reflective because Git cannot know the useful idea or context behind the work.
+
+## Daily Log Format
+
+Generated logs are intentionally short:
+
+```text
+# Daily Log — YYYY-MM-DD
+
+One concise paragraph.
+
+## Achieved
+- 3-5 concrete outcomes max.
+
+## Next
+- One next step.
+
+## Technical Evidence
+- Included only as a short source summary when evidence exists.
+```
 
 ## Optional Flags
 

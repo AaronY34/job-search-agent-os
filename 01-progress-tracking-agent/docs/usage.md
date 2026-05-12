@@ -1,6 +1,6 @@
 # Progress Tracking Agent Usage
 
-The final daily log is generated automatically by GitHub Actions. Codex should maintain lightweight session notes after meaningful work sessions so the daily log reads like a project diary instead of a file list.
+The final daily log is generated automatically by GitHub Actions. Codex should maintain lightweight session notes after meaningful work sessions so the daily log reads like a short human update instead of a file list.
 
 Session notes live here:
 
@@ -68,7 +68,18 @@ The tracker uses evidence in this priority order:
 
 Codex should update the session note automatically before finishing a meaningful project session. The note should stay concise and should not contain secrets or long raw file lists.
 
-If no session note exists, the tracker falls back to commit messages and changed file areas. That fallback is useful, but less human, because Git cannot know what was planned, tried, or learned.
+If no session note exists, the tracker falls back to commit messages and changed file areas. That fallback is useful, but less human, because Git cannot know the main idea, milestone, or context behind the work.
+
+## Output Format
+
+The generated report is intentionally compact:
+
+- One short opening paragraph.
+- `Achieved` with 3-5 concrete outcomes.
+- `Next` with one next action.
+- Optional `Technical Evidence` with session note, commit, and changed-area summaries.
+
+The tracker should not list every changed file unless there are only a few and no better summary exists.
 
 ## Status Rules
 
