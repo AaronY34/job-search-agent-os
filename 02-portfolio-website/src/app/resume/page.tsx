@@ -1,35 +1,95 @@
 import { SectionHeader } from "@/components/SectionHeader";
 import { SkillTag } from "@/components/SkillTag";
-import { profile } from "@/data/profile";
+import { capabilities, profile } from "@/data/profile";
+
+const experienceNotes = [
+  {
+    title: "ALBA International Consulting",
+    role: "System Implementation Consultant",
+    detail:
+      "Led implementation of a custom ERP platform that replaced manual Excel workflows, supported sales/service/management teams, coordinated with developers, created guides, and trained users in English and Mandarin.",
+  },
+  {
+    title: "UBC ICON Lab",
+    role: "Research Assistant",
+    detail:
+      "Coordinated research work, supported drone testing preparation, contributed to drone systems and data workflows, and co-authored research published at BuildSys 2024.",
+  },
+  {
+    title: "Education",
+    role: "BCIT Business IT Management + UBC Psychology & Computer Science",
+    detail:
+      "Built a cross-domain base in ERP/CRM implementation, business analytics, Python, MySQL, software architecture, data structures, and human behavior.",
+  },
+];
 
 export default function ResumePage() {
   return (
-    <main className="bg-paper text-ink">
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
-        <SectionHeader
-          eyebrow="Resume"
-          title="Resume content will stay evidence-based."
-          description="This page is a web resume shell. It is ready for real experience, education, certifications, and downloadable PDF links when those assets are selected."
-        />
-        <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1fr]">
-          <section>
-            <h2 className="text-xl font-semibold">Current Highlights</h2>
-            <ul className="mt-5 space-y-4 text-sm leading-7 text-ink/70">
-              {profile.resumeHighlights.map((item) => (
-                <li key={item} className="border-l-2 border-clay/70 pl-4">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section>
-            <h2 className="text-xl font-semibold">Skill Areas</h2>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {profile.skills.map((skill) => (
-                <SkillTag key={skill} label={skill} />
-              ))}
-            </div>
-          </section>
+    <main className="bg-white text-slate-900">
+      <section className="relative mx-auto max-w-6xl px-6 py-20 sm:px-10">
+        <div className="pointer-events-none absolute inset-y-0 left-6 right-6 border-x border-slate-200/70 sm:left-10 sm:right-10" />
+        <div className="relative">
+          <SectionHeader
+            eyebrow="Resume"
+            title="Implementation background, presented as a working narrative."
+            description="A concise view of the experience behind the portfolio: business systems implementation, workflow automation, data analysis, research coordination, and practical execution support."
+          />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl border-t border-slate-200 px-6 py-20 sm:px-10">
+        <div className="grid gap-5 md:grid-cols-2">
+          {capabilities.map((capability) => (
+            <article key={capability.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-100">
+              <h2 className="text-xl font-semibold tracking-tight text-slate-950">{capability.title}</h2>
+              <p className="mt-3 text-sm leading-7 text-slate-600">{capability.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
+        <div className="mb-8">
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Experience Timeline</p>
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">From implementation to research operations.</h2>
+        </div>
+        <div className="grid gap-4">
+          {experienceNotes.map((item) => (
+            <article key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-100">
+              <p className="text-sm font-medium text-sky-700">{item.role}</p>
+              <h3 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-600">{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
+        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Skills / Tools</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">A practical mix of systems, data, and communication.</h2>
+            <p className="mt-5 text-base leading-8 text-slate-600">
+              The toolset matters because it supports implementation: understanding requirements, organizing data, documenting workflows, and helping people adopt better systems.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {profile.skills.concat(["ERP/CRM", "Power BI", "Tableau", "Python", "SQL", "Excel", "Mandarin / English"]).map((skill) => (
+              <SkillTag key={skill} label={skill} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pb-20 sm:px-10">
+        <div className="rounded-3xl border border-sky-100 bg-sky-50/70 p-6 sm:p-8">
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Current Direction</p>
+          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950">
+            Moving toward AI-assisted systems, workflow orchestration, implementation consulting, and automation-driven execution systems.
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            The current portfolio work is intentionally focused on building visible evidence: systems that organize work, reduce friction, keep humans in the loop, and make progress easier to inspect.
+          </p>
         </div>
       </section>
     </main>

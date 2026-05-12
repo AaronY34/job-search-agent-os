@@ -4,14 +4,20 @@ import { projects } from "@/data/projects";
 
 export default function ProjectsPage() {
   return (
-    <main className="bg-paper text-ink">
-      <section className="mx-auto max-w-6xl px-6 py-16 sm:px-10">
-        <SectionHeader
-          eyebrow="Projects"
-          title="A project portfolio built around implementation evidence."
-          description="These projects are listed as current portfolio material. Items that are not finished are clearly marked as in progress or research."
-        />
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
+    <main className="bg-white text-slate-900">
+      <section className="relative mx-auto max-w-6xl px-6 py-20 sm:px-10">
+        <div className="pointer-events-none absolute inset-y-0 left-6 right-6 border-x border-slate-200/70 sm:left-10 sm:right-10" />
+        <div className="relative">
+          <SectionHeader
+            eyebrow="Projects"
+            title="Systems, workflows, implementations, and ongoing builds."
+            description="This page is the single place for current portfolio evidence. Projects are framed as systems or processes: what problem they address, how they are being approached, what tools are involved, and what exists now."
+          />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl border-t border-slate-200 px-6 py-20 sm:px-10">
+        <div className="grid gap-5">
           {projects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}

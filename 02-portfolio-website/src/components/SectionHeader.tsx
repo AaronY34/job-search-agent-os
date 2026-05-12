@@ -8,12 +8,12 @@ export function SectionHeader({ eyebrow, title, description }: SectionHeaderProp
   return (
     <div className="max-w-3xl">
       {eyebrow ? (
-        <p className="text-sm font-semibold uppercase text-moss">{eyebrow}</p>
+        <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">{eyebrow}</p>
       ) : null}
-      <h1 className="mt-3 text-3xl font-semibold leading-tight text-ink sm:text-5xl">
+      <h1 className="mt-4 text-4xl font-semibold leading-[1.04] tracking-tight text-slate-950 sm:text-6xl">
         {title}
       </h1>
-      {description ? <p className="mt-5 text-base leading-8 text-ink/70">{description}</p> : null}
+      {description ? <p className="mt-6 text-base leading-8 text-slate-600">{description}</p> : null}
     </div>
   );
 }

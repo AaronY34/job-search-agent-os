@@ -4,9 +4,9 @@ import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aaron Young | Portfolio",
+  title: "Aaron Yang | Reducing Complexity Through Systems",
   description:
-    "Portfolio for IT implementation, workflow automation, data analysis, and AI-assisted systems.",
+    "Systems-oriented portfolio for IT implementation, workflow automation, data analysis, and AI-assisted execution systems.",
 };
 
 export default function RootLayout({

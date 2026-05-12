@@ -10,7 +10,7 @@ Positioning:
 IT Implementation | Workflow Automation | Data Analysis | AI-assisted Systems
 ```
 
-This subproject is separate from `01-progress-tracking-agent`. It contains the website source only. Non-code assets such as screenshots, resume PDFs, case study exports, and profile images should stay in the Google Drive project folder unless there is a clear reason to commit optimized web assets.
+This subproject is separate from `01-progress-tracking-agent`. It contains the website source only. Non-code assets such as screenshots, resume PDFs, exports, and profile images should stay in the Google Drive project folder unless there is a clear reason to commit optimized web assets.
 
 ## Tech Stack
 
@@ -21,19 +21,17 @@ This subproject is separate from `01-progress-tracking-agent`. It contains the w
 
 ## Pages
 
-- Home: summary, positioning, focus areas, and featured work.
-- About: working style and skill focus.
-- Projects: project showcase using `src/data/projects.ts`.
-- Case Studies: deeper write-up candidates for selected projects.
-- Resume: web resume shell ready for real experience and resume assets.
-- Contact: public contact shell ready for final links.
+- Home: systems narrative, positioning, philosophy, featured system, workflow transformation, and selected projects.
+- About: reflective introduction to working style, systems thinking, and human-centered implementation.
+- Projects: single source for systems, workflows, implementations, ongoing builds, and research projects using `src/data/projects.ts`.
+- Resume: narrative resume page based on real implementation, research, education, skills, and current direction.
+- Contact: public contact page with positioning, email, and LinkedIn.
 
 ## Components
 
 - `Navbar`
 - `Footer`
 - `ProjectCard`
-- `CaseStudyCard`
 - `SkillTag`
 - `SectionHeader`
 
@@ -52,8 +50,8 @@ Initial projects:
 1. Job Search Agent OS
 2. Progress Tracking Agent
 3. Inventory Forecasting Dashboard
-4. ERP/CRM Implementation Case Study
-5. Drone Data Pipeline Research Project
+4. ERP/CRM Implementation Work
+5. Drone Data Pipeline / ICON Lab Research
 
 ## Folder Structure
 
@@ -69,7 +67,6 @@ Initial projects:
   src/
     app/
       about/
-      case-studies/
       contact/
       projects/
       resume/
