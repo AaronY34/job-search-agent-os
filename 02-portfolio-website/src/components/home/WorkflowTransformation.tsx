@@ -25,13 +25,13 @@ export function WorkflowTransformation() {
   return (
     <div className="grid gap-3 lg:grid-cols-5">
       {workflowSteps.map((step, index) => (
-        <article key={step.title} className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-100">
+        <article key={step.title} className="soft-card relative rounded-2xl p-5">
           {index < workflowSteps.length - 1 ? (
-            <span className="absolute -right-3 top-8 hidden h-px w-6 bg-sky-300/55 lg:block" />
+            <span className="absolute -right-3 top-8 hidden h-px w-6 bg-[#d9ccba] lg:block" />
           ) : null}
-          <p className="text-sm text-sky-700">0{index + 1}</p>
-          <h3 className="mt-4 text-lg font-semibold text-slate-950">{step.title}</h3>
-          <p className="mt-3 text-sm leading-6 text-slate-600">{step.description}</p>
+          <p className="text-sm text-[#8a6a4d]">0{index + 1}</p>
+          <h3 className="mt-4 text-lg font-semibold text-[#111827]">{step.title}</h3>
+          <p className="mt-3 text-sm leading-6 text-[#596574]">{step.description}</p>
         </article>
       ))}
     </div>

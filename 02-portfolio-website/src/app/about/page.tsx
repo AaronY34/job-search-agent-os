@@ -22,9 +22,9 @@ const reflectionBlocks = [
 
 export default function AboutPage() {
   return (
-    <main className="bg-white text-slate-900">
+    <main className="site-shell text-[#111827]">
       <section className="relative mx-auto max-w-6xl px-6 py-20 sm:px-10">
-        <div className="pointer-events-none absolute inset-y-0 left-6 right-6 border-x border-slate-200/70 sm:left-10 sm:right-10" />
+        <div className="pointer-events-none absolute inset-y-0 left-6 right-6  sm:left-10 sm:right-10" />
         <div className="relative">
           <SectionHeader
             eyebrow="About"
@@ -34,33 +34,43 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl border-t border-slate-200 px-6 py-20 sm:px-10">
-        <div className="grid gap-6 lg:grid-cols-3">
+      <section className="mx-auto max-w-6xl  px-6 py-20 sm:px-10">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+          <div className="relative min-h-[420px] overflow-hidden shadow-[0_24px_70px_rgba(85,73,57,0.12)]">
+            <img
+              src="/images/architectural-human-space.png"
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(250,250,248,0.08),transparent_45%),linear-gradient(180deg,rgba(255,246,224,0.06),rgba(17,24,39,0.14))]" />
+          </div>
+          <div className="grid gap-6">
           {reflectionBlocks.map((block) => (
-            <article key={block.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-100">
-              <h2 className="text-xl font-semibold tracking-tight text-slate-950">{block.title}</h2>
-              <p className="mt-4 text-sm leading-7 text-slate-600">{block.body}</p>
+            <article key={block.title} className="rounded-2xl bg-white/68 p-6 shadow-[0_18px_55px_rgba(85,73,57,0.10)]">
+              <h2 className="text-xl font-semibold tracking-tight text-[#111827]">{block.title}</h2>
+              <p className="mt-4 text-sm leading-7 text-[#596574]">{block.body}</p>
             </article>
           ))}
+          </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Working Model</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#8a6a4d]">Working Model</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#111827]">
               Turning ambiguous work into executable systems.
             </h2>
-            <p className="mt-5 text-base leading-8 text-slate-600">
+            <p className="mt-5 text-base leading-8 text-[#596574]">
               Reducing complexity is not about making work simplistic. It is about giving people a clear path through it: what matters, what repeats, what can be automated, what needs review, and how progress should be tracked.
             </p>
           </div>
           <div className="grid gap-3">
             {thinkingPrinciples.map((principle, index) => (
-              <div key={principle} className="rounded-2xl border border-sky-100 bg-sky-50/70 p-5">
-                <p className="text-sm text-sky-700">0{index + 1}</p>
-                <p className="mt-2 text-sm leading-7 text-slate-700">{principle}</p>
+              <div key={principle} className="rounded-2xl bg-[#f3f1ed]/56 p-5">
+                <p className="text-sm text-[#8a6a4d]">0{index + 1}</p>
+                <p className="mt-2 text-sm leading-7 text-[#344154]">{principle}</p>
               </div>
             ))}
           </div>
@@ -68,9 +78,9 @@ export default function AboutPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-20 sm:px-10">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-100 sm:p-8">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Focus Areas</p>
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950">
+        <div className="rounded-3xl bg-white/68 p-6 shadow-[0_24px_70px_rgba(85,73,57,0.12)] sm:p-8">
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#8a6a4d]">Focus Areas</p>
+          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#111827]">
             The through-line is implementation: systems that help people move from intention to execution.
           </h2>
           <div className="mt-6 flex flex-wrap gap-2">

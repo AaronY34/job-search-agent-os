@@ -11,6 +11,7 @@ import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
 
 const jobSearchSystem = projects.find((project) => project.slug === "job-search-agent-os") ?? projects[0];
+const focusAreas = ["IT Implementation", "Workflow Automation", "Data Analysis", "AI-assisted Systems"];
 
 function NarrativeHeader({
   eyebrow,
@@ -23,82 +24,90 @@ function NarrativeHeader({
 }) {
   return (
     <div className="max-w-3xl">
-      <p className="text-sm font-medium uppercase tracking-[0.22em] text-sky-700">{eyebrow}</p>
-      <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">{title}</h2>
-      <p className="mt-5 text-base leading-8 text-slate-600">{description}</p>
+      <p className="eyebrow">{eyebrow}</p>
+      <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">{title}</h2>
+      <p className="mt-5 text-base leading-8 text-[#596574]">{description}</p>
     </div>
   );
 }
 
 export default function Home() {
   return (
-    <main className="overflow-hidden bg-white text-slate-900">
-      <section className="relative mx-auto min-h-[calc(100vh-81px)] w-full max-w-6xl px-6 pb-20 pt-14 sm:px-10">
-        <div className="pointer-events-none absolute inset-y-0 left-6 right-6 border-x border-slate-200/70 sm:left-10 sm:right-10" />
-        <div className="pointer-events-none absolute inset-x-0 top-[58%] border-t border-slate-200/70" />
-
-        <div className="reveal relative mx-auto flex max-w-4xl flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-500 shadow-sm">
-            <span>{profile.subheadline}</span>
-            <span className="font-semibold text-sky-700">Explore systems</span>
-          </div>
-          <p className="mt-8 text-xs font-medium uppercase tracking-[0.24em] text-sky-700">{profile.positioning}</p>
-          <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-tight text-slate-950 sm:text-7xl">
-            {profile.headline}
+    <main className="site-shell overflow-hidden text-[#111827]">
+      <section className="relative mx-auto grid min-h-[92vh] w-full max-w-[1440px] overflow-hidden px-8 pt-40 sm:px-12 lg:grid-cols-[42%_58%] lg:px-0 lg:pt-0">
+        <div className="relative z-10 flex flex-col justify-center pb-12 pt-8 lg:min-h-[92vh] lg:pl-[7vw] lg:pr-6 lg:pt-32">
+          <p className="max-w-[520px] text-xs font-semibold uppercase tracking-[0.16em] text-[#8a6f52]">
+            {profile.positioning}
+          </p>
+          <h1 className="mt-9 max-w-[500px] text-[clamp(3.25rem,5vw,4.9rem)] font-bold leading-[0.97] tracking-[-0.04em] text-[#0f172a]">
+            Reducing
+            <br />
+            Complexity
+            <br />
+            Through Systems
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600">{profile.summary}</p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <p className="mt-8 max-w-[480px] text-[22px] leading-[1.5] text-[#334155] sm:text-2xl">
+            {profile.subheadline}
+          </p>
+          <p className="mt-7 max-w-[500px] text-base leading-[1.8] text-[#64748b] sm:text-[17px]">
+            {profile.summary}
+          </p>
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
               href="#systems"
-              className="rounded-lg bg-slate-950 px-5 py-3 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              className="pale-blue-button rounded-lg px-6 py-3.5 text-center text-sm font-semibold transition"
             >
               View Systems
             </a>
             <Link
               href="/projects"
-              className="rounded-lg border border-slate-200 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+              className="rounded-lg bg-white/70 px-6 py-3.5 text-center text-sm font-semibold text-[#0f172a] shadow-[0_10px_28px_rgba(85,73,57,0.06)] transition hover:bg-white/90"
             >
               View Projects
             </Link>
-            <a
-              href={profile.linkedin}
-              className="rounded-lg border border-slate-200 bg-white px-5 py-3 text-center text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
-            >
-              LinkedIn
-            </a>
           </div>
         </div>
-
-        <div className="reveal reveal-delay-1 relative mx-auto mt-20 max-w-5xl">
+        <div className="relative min-h-[56vh] lg:flex lg:h-[92vh] lg:items-end lg:pt-12">
           <HeroSystemMap />
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl border-t border-slate-200 px-6 py-20 sm:px-10">
-        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+      <section className="mx-auto max-w-[1440px] bg-[linear-gradient(180deg,rgba(250,250,248,0),rgba(250,250,248,0.86))] px-8 py-11 sm:px-12 lg:px-[7vw]">
+        <div className="h-px w-full bg-[#e8e3da]/70" />
+        <p className="eyebrow mb-7 mt-7">Focus Areas</p>
+        <div className="grid gap-8 md:grid-cols-4">
+          {focusAreas.map((area, index) => (
+            <div key={area} className="flex items-center gap-4 text-sm text-[#344154]">
+              <span className="flex h-9 w-9 items-center justify-center bg-transparent text-[#8ea0b5]">
+                0{index + 1}
+              </span>
+              {area}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1440px] bg-[linear-gradient(180deg,rgba(247,244,239,0.74),rgba(250,250,248,0.52))] px-8 py-24 sm:px-12 lg:px-[7vw]">
+        <div className="relative grid gap-12 lg:grid-cols-[34%_66%] lg:items-center">
           <NarrativeHeader
-            eyebrow="Core Philosophy"
-            title="Messy work becomes manageable when the system around it is visible."
-            description="Complex work often fails because the next step is unclear, information is fragmented, and repetitive decisions drain attention. My work focuses on making the workflow inspectable, repeatable, and easier to start."
+            eyebrow="Philosophy"
+            title="Why systems matter."
+            description="Complex work often fails not because people cannot do it, but because workflows are fragmented, repetitive, and hard to start. I design systems that bring structure, clarity, and automation to the right places while keeping human judgment at the center."
           />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <article className="border border-sky-100 bg-white/75 p-6 shadow-sm shadow-sky-100/50">
-              <h3 className="text-lg font-semibold text-slate-950">Before</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-600">
-                Scattered documents, manual updates, unclear handoffs, duplicated effort, and decisions that reset every time.
-              </p>
-            </article>
-            <article className="border border-sky-200 bg-sky-50/80 p-6 shadow-sm shadow-sky-100/60">
-              <h3 className="text-lg font-semibold text-slate-950">After</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-700">
-                Structured workflows, clear checkpoints, practical automation, tracked progress, and human approval where it matters.
-              </p>
-            </article>
+          <div className="relative min-h-[360px] shadow-[0_18px_55px_rgba(85,73,57,0.055)]">
+            <div className="relative h-full min-h-[360px] overflow-hidden">
+              <img
+                src="/images/architectural-warm-arch.png"
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(247,244,239,0.18)_0%,rgba(247,244,239,0.06)_9%,transparent_24%,transparent_88%,rgba(247,244,239,0.05)_100%),linear-gradient(180deg,rgba(247,244,239,0.04)_0%,transparent_12%,transparent_90%,rgba(250,250,248,0.10)_100%)]" />
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
+      <section className="mx-auto max-w-6xl px-6 py-24 sm:px-10">
         <div className="mb-10">
           <NarrativeHeader
             eyebrow="What I Build"
@@ -113,7 +122,7 @@ export default function Home() {
         <FeaturedSystem project={jobSearchSystem} />
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
+      <section className="mx-auto max-w-6xl px-6 py-24 sm:px-10">
         <div className="mb-10">
           <NarrativeHeader
             eyebrow="Workflow Transformation"
@@ -124,7 +133,7 @@ export default function Home() {
         <WorkflowTransformation />
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
+      <section className="mx-auto max-w-6xl px-6 py-24 sm:px-10">
         <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <NarrativeHeader
             eyebrow="Selected Projects"
@@ -139,7 +148,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
+      <section className="mx-auto max-w-6xl px-6 py-24 sm:px-10">
         <div className="mb-10">
           <NarrativeHeader
             eyebrow="How I Think"
@@ -150,7 +159,7 @@ export default function Home() {
         <ThinkingPrinciples />
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
+      <section className="mx-auto max-w-6xl px-6 py-24 sm:px-10">
         <div className="mb-10">
           <NarrativeHeader
             eyebrow="Background"

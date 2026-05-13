@@ -4,9 +4,9 @@ import { projects } from "@/data/projects";
 
 export default function ProjectsPage() {
   return (
-    <main className="bg-white text-slate-900">
+    <main className="site-shell text-[#111827]">
       <section className="relative mx-auto max-w-6xl px-6 py-20 sm:px-10">
-        <div className="pointer-events-none absolute inset-y-0 left-6 right-6 border-x border-slate-200/70 sm:left-10 sm:right-10" />
+        <div className="pointer-events-none absolute inset-y-0 left-6 right-6  sm:left-10 sm:right-10" />
         <div className="relative">
           <SectionHeader
             eyebrow="Projects"
@@ -16,7 +16,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl border-t border-slate-200 px-6 py-20 sm:px-10">
+      <section className="mx-auto max-w-6xl  px-6 py-20 sm:px-10">
         <div className="grid gap-5">
           {projects.map((project) => (
             <ProjectCard key={project.slug} project={project} />

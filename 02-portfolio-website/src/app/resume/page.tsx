@@ -25,9 +25,9 @@ const experienceNotes = [
 
 export default function ResumePage() {
   return (
-    <main className="bg-white text-slate-900">
+    <main className="site-shell text-[#111827]">
       <section className="relative mx-auto max-w-6xl px-6 py-20 sm:px-10">
-        <div className="pointer-events-none absolute inset-y-0 left-6 right-6 border-x border-slate-200/70 sm:left-10 sm:right-10" />
+        <div className="pointer-events-none absolute inset-y-0 left-6 right-6  sm:left-10 sm:right-10" />
         <div className="relative">
           <SectionHeader
             eyebrow="Resume"
@@ -37,12 +37,12 @@ export default function ResumePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl border-t border-slate-200 px-6 py-20 sm:px-10">
+      <section className="mx-auto max-w-6xl  px-6 py-20 sm:px-10">
         <div className="grid gap-5 md:grid-cols-2">
           {capabilities.map((capability) => (
-            <article key={capability.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-100">
-              <h2 className="text-xl font-semibold tracking-tight text-slate-950">{capability.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{capability.description}</p>
+            <article key={capability.title} className="rounded-2xl bg-white/68 p-6 shadow-[0_18px_55px_rgba(85,73,57,0.10)]">
+              <h2 className="text-xl font-semibold tracking-tight text-[#111827]">{capability.title}</h2>
+              <p className="mt-3 text-sm leading-7 text-[#596574]">{capability.description}</p>
             </article>
           ))}
         </div>
@@ -50,15 +50,15 @@ export default function ResumePage() {
 
       <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
         <div className="mb-8">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Experience Timeline</p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">From implementation to research operations.</h2>
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#8a6a4d]">Experience Timeline</p>
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#111827]">From implementation to research operations.</h2>
         </div>
         <div className="grid gap-4">
           {experienceNotes.map((item) => (
-            <article key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-100">
-              <p className="text-sm font-medium text-sky-700">{item.role}</p>
-              <h3 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{item.detail}</p>
+            <article key={item.title} className="rounded-2xl bg-white/68 p-6 shadow-[0_18px_55px_rgba(85,73,57,0.10)]">
+              <p className="text-sm font-medium text-[#8a6a4d]">{item.role}</p>
+              <h3 className="mt-2 text-xl font-semibold tracking-tight text-[#111827]">{item.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#596574]">{item.detail}</p>
             </article>
           ))}
         </div>
@@ -67,9 +67,9 @@ export default function ResumePage() {
       <section className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Skills / Tools</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">A practical mix of systems, data, and communication.</h2>
-            <p className="mt-5 text-base leading-8 text-slate-600">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#8a6a4d]">Skills / Tools</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[#111827]">A practical mix of systems, data, and communication.</h2>
+            <p className="mt-5 text-base leading-8 text-[#596574]">
               The toolset matters because it supports implementation: understanding requirements, organizing data, documenting workflows, and helping people adopt better systems.
             </p>
           </div>
@@ -82,12 +82,12 @@ export default function ResumePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-20 sm:px-10">
-        <div className="rounded-3xl border border-sky-100 bg-sky-50/70 p-6 sm:p-8">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-sky-700">Current Direction</p>
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950">
+        <div className="rounded-3xl bg-[#f3f1ed]/56 p-6 sm:p-8">
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-[#8a6a4d]">Current Direction</p>
+          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[#111827]">
             Moving toward AI-assisted systems, workflow orchestration, implementation consulting, and automation-driven execution systems.
           </h2>
-          <p className="mt-4 text-sm leading-7 text-slate-600">
+          <p className="mt-4 text-sm leading-7 text-[#596574]">
             The current portfolio work is intentionally focused on building visible evidence: systems that organize work, reduce friction, keep humans in the loop, and make progress easier to inspect.
           </p>
         </div>

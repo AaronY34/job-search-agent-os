@@ -6,11 +6,11 @@ export function CapabilityGrid() {
       {capabilities.map((capability, index) => (
         <article
           key={capability.title}
-          className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-100 transition duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-lg hover:shadow-slate-200"
+          className="soft-card soft-card-hover group rounded-2xl p-6"
         >
-          <p className="text-sm text-sky-700">0{index + 1}</p>
-          <h3 className="mt-4 text-xl font-semibold text-slate-950">{capability.title}</h3>
-          <p className="mt-3 text-sm leading-7 text-slate-600">{capability.description}</p>
+          <p className="text-sm text-[#8a6a4d]">0{index + 1}</p>
+          <h3 className="mt-4 text-xl font-semibold text-[#111827]">{capability.title}</h3>
+          <p className="mt-3 text-sm leading-7 text-[#596574]">{capability.description}</p>
         </article>
       ))}
     </div>
