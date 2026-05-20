@@ -1,32 +1,23 @@
-# Local secrets and machine-specific config
+﻿# external repositories
+external-repos/
+
+# environment variables
+.env
+.env.*
+!.env.example
+
+# dependencies
 node_modules/
+
+# build outputs
 .next/
+out/
 dist/
 build/
-.venv/
-venv/
-__pycache__/
-.env
-.env.local
-.env.*
-*.log
+
+# vercel
+.vercel/
+
+# system files
 .DS_Store
-credentials/
-secrets/
-*.secret.*
-*secret*.json
-*credentials*.json
-*credential*.json
-*service-account*.json
-*service_account*.json
-*api-key*.json
-*api_key*.json
-*.key
-*.pem
-
-# Progress Tracking Agent local generated data
-01-progress-tracking-agent/data/*.csv
-01-progress-tracking-agent/data/*.bak
-
-.vercel
-.env*.local
+Thumbs.db
