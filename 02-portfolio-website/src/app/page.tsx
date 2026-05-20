@@ -5,6 +5,7 @@ type ProjectMoment = {
   title: string;
   caption: string;
   image: string;
+  href?: string;
 };
 
 type Chapter = {
@@ -105,31 +106,67 @@ const chapters: Chapter[] = [
         title: "Si Shi",
         caption: "A reflection on time, rhythm, and seasonal experience through digital space.",
         image: "/images/architectural-warm-arch.png",
+        href: "https://www.iv-space.com/",
       },
     ],
   },
 ];
 
+function AboutSection() {
+  return (
+    <section id="about" className="about-section snap-section">
+      <Image
+        src="/images/about-atmosphere-v3.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
+      />
+      <div className="about-mobile-readability" />
+      <div className="about-copy">
+        <h2>About Me</h2>
+        <p>I work at the intersection of psychology, business systems, data, and automation.</p>
+        <p>
+          Most of my work begins with messy processes:
+          <br />
+          unclear responsibilities,
+          <br />
+          manual repetition,
+          <br />
+          scattered information,
+          <br />
+          and too much attention spent on the wrong things.
+        </p>
+        <p>I&apos;m interested in how structure changes action.</p>
+        <p>
+          How workflows reduce friction.
+          <br />
+          How systems protect attention.
+          <br />
+          How technology can support people
+          <br />
+          without replacing human judgment.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function AtmosphericSection({
   id,
   image,
   children,
-  align = "left",
 }: {
   id?: string;
   image: string;
   children: React.ReactNode;
-  align?: "left" | "right";
 }) {
   return (
-    <section id={id} className="relative min-h-screen overflow-hidden">
-      <Image src={image} alt="" fill sizes="100vw" className="object-cover" priority={id === "about"} />
+    <section id={id} className="snap-section relative min-h-screen overflow-hidden">
+      <Image src={image} alt="" fill sizes="100vw" className="object-cover" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(248,245,237,0.94),rgba(248,245,237,0.64)_42%,rgba(248,245,237,0.12)),linear-gradient(180deg,rgba(248,245,237,0.15),rgba(248,245,237,0.28))]" />
-      <div
-        className={`relative mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24 sm:px-10 ${
-          align === "right" ? "justify-end" : "justify-start"
-        }`}
-      >
+      <div className="relative mx-auto flex min-h-screen max-w-6xl items-center justify-start px-6 py-24 sm:px-10">
         <div className="max-w-[560px] text-[clamp(1rem,1.45vw,1.24rem)] leading-[1.72] text-[var(--text-main)]">
           {children}
         </div>
@@ -155,9 +192,12 @@ function ChapterText({ chapter }: { chapter: Chapter }) {
   );
 }
 
-function ProjectMomentView({ project }: { project: ProjectMoment }) {
+function ProjectMomentView({ project, index }: { project: ProjectMoment; index: number }) {
   return (
-    <article className="flex min-h-[82vh] flex-col justify-center py-20 lg:min-h-screen">
+    <article
+      className="project-moment snap-section flex min-h-screen flex-col justify-center py-20 lg:sticky lg:top-0"
+      style={{ zIndex: index + 1 }}
+    >
       <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[4px]">
         <Image src={project.image} alt="" fill sizes="(min-width: 1024px) 45vw, 92vw" className="object-cover" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(248,245,237,0.04),rgba(248,245,237,0.16))]" />
@@ -167,7 +207,18 @@ function ProjectMomentView({ project }: { project: ProjectMoment }) {
           {project.title}
         </h3>
         <p className="mt-2 text-base leading-7 text-[var(--text-secondary)]">{project.caption}</p>
-        <span className="mt-5 inline-flex text-sm text-[var(--accent-warm)]">View project ↗</span>
+        {project.href ? (
+          <a
+            href={project.href}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-5 inline-flex text-sm text-[var(--accent-warm)] transition hover:text-[var(--text-main)]"
+          >
+            View project ↗
+          </a>
+        ) : (
+          <span className="mt-5 inline-flex text-sm text-[var(--accent-warm)]">View project ↗</span>
+        )}
       </div>
     </article>
   );
@@ -175,15 +226,15 @@ function ProjectMomentView({ project }: { project: ProjectMoment }) {
 
 function ChapterSection({ chapter }: { chapter: Chapter }) {
   const projectColumn = (
-    <div className="space-y-0 lg:col-span-1">
-      {chapter.projects.map((project) => (
-        <ProjectMomentView key={project.title} project={project} />
+    <div className={`${chapter.reverse ? "lg:order-1" : "lg:order-2"} lg:col-span-1`}>
+      {chapter.projects.map((project, index) => (
+        <ProjectMomentView key={project.title} project={project} index={index} />
       ))}
     </div>
   );
 
   const textColumn = (
-    <div className="lg:sticky lg:top-0 lg:col-span-1 lg:self-start">
+    <div className={`${chapter.reverse ? "lg:order-2" : "lg:order-1"} lg:sticky lg:top-0 lg:col-span-1 lg:self-start`}>
       <ChapterText chapter={chapter} />
     </div>
   );
@@ -191,22 +242,12 @@ function ChapterSection({ chapter }: { chapter: Chapter }) {
   return (
     <section
       id={chapter.id}
-      className="relative border-t border-[var(--line-soft)]"
+      className="chapter-section relative"
       style={{ minHeight: `${Math.max(chapter.projects.length, 1) * 100}vh` }}
     >
-      <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px bg-[rgba(30,30,28,0.08)] lg:block" />
       <div className="mx-auto grid max-w-6xl gap-12 px-6 sm:px-10 lg:grid-cols-2 lg:gap-20">
-        {chapter.reverse ? (
-          <>
-            {projectColumn}
-            {textColumn}
-          </>
-        ) : (
-          <>
-            {textColumn}
-            {projectColumn}
-          </>
-        )}
+        {textColumn}
+        {projectColumn}
       </div>
     </section>
   );
@@ -215,37 +256,28 @@ function ChapterSection({ chapter }: { chapter: Chapter }) {
 export default function Home() {
   return (
     <main className="narrative-root bg-[var(--bg-main)] text-[var(--text-main)]">
-      <section className="flex min-h-screen items-center justify-center px-6 text-center">
-        <div className="max-w-[900px]">
-          <h1 className="text-[clamp(3rem,6vw,5.5rem)] font-medium leading-[1.1] tracking-[-0.045em] text-[var(--text-main)]">
+      <section className="snap-section relative min-h-screen px-6 text-center">
+        <div className="absolute left-1/2 top-[58vh] w-full max-w-[900px] -translate-x-1/2 -translate-y-1/2 px-6">
+          <h1 className="text-[clamp(3.25rem,6vw,5.5rem)] font-medium leading-[1.1] tracking-[-0.045em] text-[var(--text-main)]">
             Hello, I&apos;m Aaron.
           </h1>
-          <p className="mt-8 text-[clamp(1.35rem,2.2vw,2.15rem)] leading-[1.28] tracking-[-0.025em] text-[var(--text-secondary)]">
+          <p className="mt-10 text-[clamp(1.25rem,2vw,1.875rem)] leading-[1.5] tracking-[-0.02em] text-[var(--text-secondary)]">
             I explore AI, systems, and automation
           </p>
-          <p className="mt-3 text-[clamp(1.35rem,2.2vw,2.15rem)] leading-[1.28] tracking-[-0.025em] text-[var(--text-secondary)]">
+          <p className="mt-2 text-[clamp(1.25rem,2vw,1.875rem)] leading-[1.5] tracking-[-0.02em] text-[var(--text-secondary)]">
             to make space for what matters.
           </p>
-          <a
-            href="#about"
-            aria-label="Scroll to about section"
-            className="mx-auto mt-28 block w-fit text-2xl text-[var(--text-muted)] transition hover:text-[var(--accent-warm)]"
-          >
-            ↓
-          </a>
         </div>
+        <a
+          href="#about"
+          aria-label="Scroll to about section"
+          className="hero-scroll-cue text-2xl text-[var(--text-muted)] transition hover:text-[var(--accent-warm)]"
+        >
+          ↓
+        </a>
       </section>
 
-      <AtmosphericSection id="about" image="/images/architectural-human-space.png">
-        <p>I work at the intersection of psychology, business systems, data, and automation.</p>
-        <p className="mt-8">
-          Most of my work begins with messy processes: unclear responsibilities, manual repetition, scattered information, and too much attention spent on the wrong things.
-        </p>
-        <p className="mt-8">I&apos;m interested in how structure changes action.</p>
-        <p className="mt-8">
-          How workflows reduce friction. How systems protect attention. How technology can support people without replacing human judgment.
-        </p>
-      </AtmosphericSection>
+      <AboutSection />
 
       <div id="systems">
         {chapters.map((chapter) => (
