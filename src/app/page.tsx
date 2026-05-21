@@ -63,6 +63,11 @@ const chapters: Chapter[] = [
         caption: "Extending implementation work with dashboards, process automation, and workflow support.",
         image: "/images/architectural-warm-arch.png",
       },
+      {
+        title: "More automation projects are coming soon",
+        caption: "Additional automation and active systems work will be added here soon.",
+        image: "/images/architectural-warm-arch.png",
+      },
     ],
   },
   {
@@ -81,6 +86,11 @@ const chapters: Chapter[] = [
         caption: "Using UAV systems to collect, process, and understand spatial data.",
         image: "/images/project-drone-research.png",
         href: "https://dl.acm.org/doi/abs/10.1145/3671127.3698172",
+      },
+      {
+        title: "ICON Drone",
+        caption: "Additional ICON Lab drone project details are coming soon.",
+        image: "/images/project-drone-research.png",
       },
     ],
   },
@@ -106,6 +116,12 @@ const chapters: Chapter[] = [
         image: "/images/project-si-shi.png",
         imageFit: "contain",
         href: "https://www.iv-space.com/",
+      },
+      {
+        title: "More exciting projects are coming soon",
+        caption: "Additional explorations will be added here soon.",
+        image: "/images/project-si-shi.png",
+        imageFit: "contain",
       },
     ],
   },
@@ -142,34 +158,16 @@ function AboutSection() {
         </div>
       </div>
       <div className="about-image-panel">
-        <Image
-          src="/images/about-architecture-vertical-clean.png"
-          alt=""
-          fill
-          priority
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          className="about-image object-cover"
-        />
-      </div>
-    </section>
-  );
-}
-
-function ProcedureIntroSection({ chapter }: { chapter: Chapter }) {
-  return (
-    <section className="about-section procedure-intro-section snap-section" data-scroll-section data-scroll-order="2">
-      <div className="procedure-intro-copy">
-        <ChapterText chapter={chapter} />
-      </div>
-      <div className="about-image-panel">
-        <Image
-          src="/images/about-architecture-vertical-clean.png"
-          alt=""
-          fill
-          priority
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          className="about-image object-cover"
-        />
+        <div className="about-image-frame">
+          <Image
+            src="/images/about-procedure-architecture.png"
+            alt=""
+            fill
+            priority
+            sizes="(min-width: 1024px) 32vw, 92vw"
+            className="about-image object-cover"
+          />
+        </div>
       </div>
     </section>
   );
@@ -224,7 +222,7 @@ function ChapterText({ chapter }: { chapter: Chapter }) {
 function ProjectMomentView({ project, index }: { project: ProjectMoment; index: number }) {
   return (
     <article
-      className="project-moment snap-section flex min-h-screen flex-col justify-center px-6 py-20 sm:px-10 lg:sticky lg:top-0 lg:px-[6vw]"
+      className="project-moment snap-section flex min-h-screen flex-col justify-center px-6 py-20 sm:px-10 lg:px-[6vw]"
       style={{ zIndex: index + 1 }}
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[4px] bg-[var(--surface-soft)]">
@@ -271,7 +269,7 @@ function ChapterSection({ chapter, orderStart }: { chapter: Chapter; orderStart:
   );
 
   const textColumn = (
-    <div className={`${chapter.reverse ? "lg:order-2" : "lg:order-1"} lg:sticky lg:top-0 lg:col-span-1 lg:self-start`}>
+    <div className={`${chapter.reverse ? "lg:order-2" : "lg:order-1"} lg:sticky lg:top-0 lg:col-span-1 lg:h-screen lg:self-start`}>
       <ChapterText chapter={chapter} />
     </div>
   );
@@ -291,7 +289,7 @@ function ChapterSection({ chapter, orderStart }: { chapter: Chapter; orderStart:
 }
 
 export default function Home() {
-  let projectOrder = 3;
+  let projectOrder = 2;
 
   return (
     <main className="narrative-root bg-[var(--bg-main)] text-[var(--text-main)]">
@@ -318,7 +316,6 @@ export default function Home() {
       </section>
 
       <AboutSection />
-      <ProcedureIntroSection chapter={chapters[0]} />
 
       <div id="systems">
         {chapters.map((chapter) => {

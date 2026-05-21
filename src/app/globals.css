@@ -96,6 +96,7 @@ body {
   font-size: clamp(0.94rem, 1.05vw, 1.08rem);
   justify-content: flex-end;
   line-height: 1.68;
+  min-height: 100vh;
   padding: clamp(5rem, 10vw, 9rem) clamp(3rem, 5vw, 5rem) clamp(5rem, 10vw, 9rem) clamp(2rem, 8vw, 8rem);
   text-align: left;
 }
@@ -122,21 +123,25 @@ body {
 }
 
 .about-image-panel {
-  min-height: 100vh;
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: flex-start;
+  padding-right: clamp(2rem, 5vw, 5rem);
+  position: relative;
+}
+
+.about-image-frame {
+  aspect-ratio: 1088 / 1446;
+  background: var(--surface-soft);
+  border-radius: 4px;
   overflow: hidden;
   position: relative;
+  width: min(32vw, 430px);
 }
 
 .about-image {
   object-position: center center;
-}
-
-.procedure-intro-copy {
-  align-items: center;
-  color: var(--text-secondary);
-  display: flex;
-  justify-content: flex-end;
-  padding: clamp(5rem, 10vw, 9rem) clamp(3rem, 5vw, 5rem) clamp(5rem, 10vw, 9rem) clamp(2rem, 8vw, 8rem);
 }
 
 .chapter-section {
@@ -158,6 +163,7 @@ body {
 
   .about-section {
     display: block;
+    min-height: auto;
   }
 
   .about-copy {
@@ -176,21 +182,21 @@ body {
   }
 
   .about-image-panel {
-    min-height: 70vh;
+    display: flex;
+    height: auto;
+    justify-content: flex-start;
+    padding: 0 24px 4rem;
+    position: relative;
+    top: auto;
   }
 
-  .procedure-intro-copy {
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding: 4rem 24px;
+  .about-image-frame {
+    max-height: 72vh;
+    width: min(100%, 390px);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .procedure-intro-copy > * {
-    animation: push-overlap-up 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
   .reveal {
     animation: reveal-up 700ms ease both;
   }
