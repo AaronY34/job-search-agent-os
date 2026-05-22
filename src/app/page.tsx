@@ -285,7 +285,11 @@ function ProjectMomentView({ project, index }: { project: ProjectMoment; index: 
         <h3 className="text-[clamp(1.4rem,2vw,2.15rem)] font-medium tracking-[-0.025em] text-[var(--text-main)]">
           {project.title}
         </h3>
-        <p className="mt-2 text-base leading-7 text-[var(--text-secondary)]">{project.caption}</p>
+        <div className="mt-2 space-y-1 text-base leading-7 text-[var(--text-secondary)]">
+          {projectCaptionLines(project.caption).map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
         {project.href ? (
           <a
             href={project.href}
