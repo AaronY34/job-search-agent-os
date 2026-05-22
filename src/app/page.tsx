@@ -7,6 +7,8 @@ type ProjectMoment = {
   caption: string;
   image: string;
   imageFit?: "cover" | "contain";
+  imageAspect?: "wide" | "video";
+  videoEmbedUrl?: string;
   href?: string;
 };
 
@@ -34,14 +36,14 @@ const chapters: Chapter[] = [
     ],
     projects: [
       {
-        title: "UGL Operations System",
+        title: "UGL Operation System",
         caption: "Inventory, event, and operational workflow design.",
-        image: "/images/project-ugl-demo-v2.png",
+        image: "/images/project-ugl-operation-system.png",
       },
       {
-        title: "ALBA ERP / CRM Implementation",
+        title: "ALBA CRM Implementation",
         caption: "From manual Excel processes to structured business systems.",
-        image: "/images/architectural-human-space.png",
+        image: "/images/project-alba-erp-crm-implementation.png",
       },
     ],
   },
@@ -59,14 +61,20 @@ const chapters: Chapter[] = [
     ],
     projects: [
       {
-        title: "ALBA ERP / CRM Automation",
-        caption: "Extending implementation work with dashboards, process automation, and workflow support.",
-        image: "/images/architectural-warm-arch.png",
+        title: "ALBA CRM Automation",
+        caption:
+          "A second-stage upgrade that moved profile collection from consultant-only operation to guided student-side participation.",
+        image: "/images/projects/alba-automation-workflow-v2.png",
+        imageFit: "contain",
+        imageAspect: "video",
       },
       {
-        title: "More automation projects are coming soon",
-        caption: "Additional automation and active systems work will be added here soon.",
-        image: "/images/architectural-warm-arch.png",
+        title: "Job Landing OS",
+        caption:
+          "An AI-assisted execution system for collecting job information, filtering opportunities, preparing materials, and reviewing application progress.",
+        image: "/images/projects/job-landing-os-workflow-v2.png",
+        imageFit: "contain",
+        imageAspect: "video",
       },
     ],
   },
@@ -88,9 +96,11 @@ const chapters: Chapter[] = [
         href: "https://dl.acm.org/doi/abs/10.1145/3671127.3698172",
       },
       {
-        title: "ICON Drone",
-        caption: "Additional ICON Lab drone project details are coming soon.",
+        title: "ICON Drone Demo",
+        caption: "Drone demo footage from ICON Lab work.",
         image: "/images/project-drone-research.png",
+        videoEmbedUrl:
+          "https://player.vimeo.com/video/1194562828?title=0&byline=0&portrait=0&badge=0&autopause=0",
       },
     ],
   },
@@ -115,12 +125,13 @@ const chapters: Chapter[] = [
         caption: "A reflection on time, rhythm, and seasonal experience through digital space.",
         image: "/images/project-si-shi.png",
         imageFit: "contain",
+        imageAspect: "video",
         href: "https://www.iv-space.com/",
       },
       {
         title: "More exciting projects are coming soon",
         caption: "Additional explorations will be added here soon.",
-        image: "/images/project-si-shi.png",
+        image: "/images/project-more-exciting-coming-soon.png",
         imageFit: "contain",
       },
     ],
@@ -220,20 +231,41 @@ function ChapterText({ chapter }: { chapter: Chapter }) {
 }
 
 function ProjectMomentView({ project, index }: { project: ProjectMoment; index: number }) {
+  const mediaFrameClass = project.videoEmbedUrl
+    ? "relative aspect-video w-full overflow-hidden rounded-[4px] bg-[var(--bg-soft)]"
+    : `relative ${
+        project.imageAspect === "video" ? "aspect-video" : "aspect-[16/10]"
+      } w-full overflow-hidden rounded-[4px] ${
+        project.imageFit === "contain" ? "bg-[var(--bg-soft)]" : "bg-[var(--surface-soft)]"
+      }`;
+
   return (
     <article
       className="project-moment snap-section flex min-h-screen flex-col justify-center px-6 py-20 sm:px-10 lg:px-[6vw]"
       style={{ zIndex: index + 1 }}
     >
-      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[4px] bg-[var(--surface-soft)]">
-        <Image
-          src={project.image}
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 45vw, 92vw"
-          className={project.imageFit === "contain" ? "object-contain p-3" : "object-cover"}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(248,245,237,0.04),rgba(248,245,237,0.16))]" />
+      <div className={mediaFrameClass}>
+        {project.videoEmbedUrl ? (
+          <iframe
+            src={project.videoEmbedUrl}
+            title={project.title}
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+            className="absolute inset-0 h-full w-full"
+          />
+        ) : (
+          <Image
+            src={project.image}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 45vw, 92vw"
+            className={project.imageFit === "contain" ? "object-contain" : "object-cover"}
+          />
+        )}
+        {project.videoEmbedUrl || project.imageFit === "contain" ? null : (
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(248,245,237,0.04),rgba(248,245,237,0.16))]" />
+        )}
       </div>
       <div className="mt-7 max-w-[520px]">
         <h3 className="text-[clamp(1.4rem,2vw,2.15rem)] font-medium tracking-[-0.025em] text-[var(--text-main)]">
@@ -249,7 +281,7 @@ function ProjectMomentView({ project, index }: { project: ProjectMoment; index: 
           >
             View project {"\u2197"}
           </a>
-        ) : (
+        ) : project.videoEmbedUrl ? null : (
           <span className="mt-5 inline-flex text-sm text-[var(--accent-warm)]">View project {"\u2197"}</span>
         )}
       </div>
